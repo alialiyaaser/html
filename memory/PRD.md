@@ -3,50 +3,54 @@
 ## Original Problem Statement
 "لدي موقع بالفعل لكن اود تطويره بشكل كامل يدعم لغتين العربيه والانقليزيه مع اضافات اخرى"
 
-Follow-ups:
-- Existing static HTML/CSS/JS site for a Saudi gaming/setup accessories brand (UR SETUP — Premium Setup Accessories).
-- User wants full bilingual EN/AR support and a **truly world-class global-brand feel** — not a normal e-commerce look. Verbatim: "نعم اريده موقع احترافي جدا جدا ليبدوا شي عالمي وبراند احترافي وليس متجر عادي".
-- Add reviews/ratings + additional professional enhancements.
-
-## Target Users
-- Gulf gamers, streamers and setup enthusiasts (primary — AR)
-- International design-conscious PC/desk enthusiasts (secondary — EN)
-- Esports teams / offices (bulk orders)
-
-## Core Requirements (static)
-- Full bilingual EN/AR with proper RTL flip and persistent user choice
-- Premium editorial dark aesthetic — luxury brand feel, not template e-commerce
-- Reviews system (list, summary + rating breakdown, submit form)
-- Testimonials of real setups + FAQ + Newsletter + WhatsApp float
-- All product CTAs go to external Salla store
+Iteration 2 request: "اود ان اطور الهيكل يعني المربعات ابيها طبيعيه واحترافيه وابي بنر احترافي وابي عداد تنازلي او قريبا للمنتجات القادمه وهل يمكنك اضافه dash borad للتحكم خاص واقدر احط فيه صلاحيات واعطيه احد واشيله"
 
 ## Architecture
-- Frontend: React 18 (CRA) + TailwindCSS + Framer Motion + Lucide React + Sonner
-- Backend: FastAPI (uvicorn) + Motor (async Mongo) + Pydantic v2
-- Database: MongoDB (collections: reviews, newsletter, contacts, meta)
-- Static images served from /app/frontend/public
+- **Frontend**: React 18 + react-router-dom v6 + Tailwind + Framer Motion + Lucide + Sonner
+- **Backend**: FastAPI + Motor + Pydantic v2 + PyJWT + bcrypt
+- **DB**: MongoDB — collections: users, reviews, newsletter, contacts, meta, coming_soon, settings
 
-## What's Been Implemented — 2026-01-13
-- Full-stack rewrite of static site into React + FastAPI + MongoDB (100% bilingual)
-- Custom LangProvider with localStorage persistence, sets html[dir] + html[lang]
-- Sections: Loader, Header (glassmorphic + lang toggle + mobile menu), Hero (editorial oversized display type + kinetic marquee band), Products (3 marble mousepad cards + product-detail modal with specs), About, Why Us (bento asymmetric grid), Stats (animated counters), Reviews (summary card with rating breakdown + list + submit modal), Testimonials (community setup grid), FAQ (accordion), Newsletter, Contact, Footer, Floating WhatsApp + back-to-top
-- Backend APIs (all under /api): GET /, GET/POST /reviews, GET /reviews/summary, POST /newsletter (idempotent), GET /stats (animated counters + live avg rating), POST /contact
-- 6 seeded verified reviews (mixed EN/AR)
-- Design: pure black/white luxury with grain overlay, Cabinet Grotesk + Almarai typography, editorial spacing, no AI-slop patterns
-- Testing: 12/12 backend tests pass; all frontend flows verified (lang toggle, product modal, review submit, newsletter, FAQ, back-to-top, external links)
+## What's Been Implemented
+
+### Iteration 1 (2026-01-13)
+- Bilingual EN/AR with RTL/LTR + localStorage
+- Public site sections (Hero, Products, About, Why Us, Stats, Reviews with submit, Testimonials, FAQ, Newsletter, Contact, Footer, WhatsApp float, back-to-top)
+- Backend: reviews, newsletter, stats, contact
+- 6 seeded reviews (EN/AR mix)
+
+### Iteration 2 (2026-01-13)
+- **Immersive bento product cards** — 1 large + 2 stacked, full-image backgrounds with grain overlay
+- **Why Us bento** with real setup images as card backgrounds
+- **Top promo banner** — white strip above header (bilingual, CMS-managed, dismissible)
+- **Coming Soon section** — hero teaser + live countdown (D/H/M/S) + notify-me CTA
+- **JWT admin auth** — bcrypt, 12h access tokens, Bearer in Authorization header
+- **Role-based admin dashboard** at `/admin` with 3 roles:
+  - `super_admin` — everything + manage team members
+  - `admin` — reviews (all actions) + coming-soon + promo + newsletter
+  - `moderator` — reviews verify/hide only
+- **Admin pages**: Overview, Reviews (verify/hide/delete), Coming Soon CRUD, Promo Banner CMS, Newsletter list + CSV export, Users mgmt (super_admin only)
+- **Idempotent super admin seed** on backend startup (from ADMIN_EMAIL/ADMIN_PASSWORD env)
+- **Testing**: 31/31 backend pytest cases pass; all frontend flows verified
+
+## Test Credentials
+- Super Admin: `admin@ursetup.sa` / `URSetup@2026!`
+- See `/app/memory/test_credentials.md`
 
 ## Backlog (P1)
-- Wishlist / favorites persistence (localStorage)
-- Real Instagram feed integration (Instagram Basic Display API)
-- Search + filter on reviews (by rating / language)
-- Admin approval flow for reviews (verified=true toggle) via simple admin route
+- httpOnly cookie storage for JWT (currently localStorage — XSS surface)
+- Brute-force lockout on /api/auth/login (5 fails = 15min)
+- Rate limiting middleware
+- Split server.py into modules (auth, admin, public)
+- Pydantic models for the currently-`dict` PATCH payloads (reviews/coming-soon)
 
 ## Backlog (P2)
-- Product detail dedicated pages with routing (/products/[slug])
-- Live inventory sync with Salla API
-- Blog / editorial section for brand storytelling
+- Password reset flow (email token)
+- Audit log of admin actions
+- Product routes with dedicated pages `/products/[slug]`
+- Real Instagram feed integration
 - Multi-currency price display
+- Wishlist / favorites
 
-## Next Tasks
-- Optional: hook WhatsApp number to real business line (currently 966500000000 placeholder)
-- Optional: connect newsletter to Resend/SendGrid for real delivery
+## Next Tasks (immediate)
+- User can now log in to `/admin/login` and start managing content
+- Consider connecting newsletter to Resend/SendGrid for real delivery
