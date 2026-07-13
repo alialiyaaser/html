@@ -20,9 +20,9 @@ export default function Contact() {
           <p className="mt-6 text-neutral-400 leading-[1.9]">{t.contact.subtitle}</p>
         </div>
         <div className="grid md:grid-cols-3 gap-5">
-          {items.map((it, i) => (
+          {items.map((it) => (
             <a
-              key={i}
+              key={it.label}
               href={it.href}
               target="_blank"
               rel="noreferrer"

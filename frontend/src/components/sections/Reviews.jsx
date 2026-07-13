@@ -1,18 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Star, X, CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
 import { useLang } from "../../contexts/LangContext";
 import { api } from "../../lib/api";
-import { PRODUCTS } from "../../i18n/translations";
 
 export default function Reviews() {
-  const { t, lang } = useLang();
+  const { t } = useLang();
   const [reviews, setReviews] = useState([]);
   const [summary, setSummary] = useState({ count: 0, average: 0, breakdown: { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 } });
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  const load = async () => {
+  const load = useCallback(async () => {
     try {
       const [r1, r2] = await Promise.all([
         api.get("/reviews", { params: { limit: 20 } }),
@@ -21,13 +20,13 @@ export default function Reviews() {
       setReviews(r1.data);
       setSummary(r2.data);
     } catch (e) {
-      console.error(e);
+      console.error("[Reviews] failed to load reviews:", e);
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => { load(); }, [load]);
 
   const total = Math.max(summary.count, 1);
   const bd = summary.breakdown || {};
@@ -108,7 +107,7 @@ export default function Reviews() {
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-1">
                     {[1, 2, 3, 4, 5].map((n) => (
-                      <Star key={n} className={`w-3.5 h-3.5 ${n <= r.rating ? "fill-white text-white" : "text-white/20"}`} />
+                      <Star key={`r-${r.id}-s${n}`} className={`w-3.5 h-3.5 ${n <= r.rating ? "fill-white text-white" : "text-white/20"}`} />
                     ))}
                   </div>
                   {r.verified && (

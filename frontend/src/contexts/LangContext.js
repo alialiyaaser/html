@@ -8,7 +8,9 @@ export function LangProvider({ children }) {
     try {
       const saved = localStorage.getItem("ur_lang");
       if (saved === "ar" || saved === "en") return saved;
-    } catch (_) {}
+    } catch (err) {
+      console.warn("[LangProvider] Unable to read language from localStorage:", err);
+    }
     const nav = typeof navigator !== "undefined" ? navigator.language || "" : "";
     return nav.toLowerCase().startsWith("ar") ? "ar" : "en";
   })();
@@ -19,7 +21,11 @@ export function LangProvider({ children }) {
     const dir = lang === "ar" ? "rtl" : "ltr";
     document.documentElement.setAttribute("lang", lang);
     document.documentElement.setAttribute("dir", dir);
-    try { localStorage.setItem("ur_lang", lang); } catch (_) {}
+    try {
+      localStorage.setItem("ur_lang", lang);
+    } catch (err) {
+      console.warn("[LangProvider] Unable to persist language:", err);
+    }
   }, [lang]);
 
   const value = useMemo(() => {

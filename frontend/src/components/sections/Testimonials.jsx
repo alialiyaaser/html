@@ -38,7 +38,7 @@ export default function Testimonials() {
 
         <div className="grid md:grid-cols-3 gap-6">
           {SETUPS.map((s, i) => (
-            <figure key={i} className="group relative overflow-hidden bg-[#0f0f0f] border border-white/10" data-testid={`testimonial-${i}`}>
+            <figure key={s.name} className="group relative overflow-hidden bg-[#0f0f0f] border border-white/10" data-testid={`testimonial-${i}`}>
               <div className="aspect-[4/5] overflow-hidden">
                 <img src={s.img} alt="" className="w-full h-full object-cover transition-transform duration-[900ms] group-hover:scale-[1.05]" />
               </div>

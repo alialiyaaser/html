@@ -92,7 +92,7 @@ export default function Hero() {
       <div className="mt-16 lg:mt-24 border-y border-white/10 py-5 overflow-hidden marquee-mask">
         <div className={`flex gap-14 whitespace-nowrap ${lang === "ar" ? "animate-marquee-rtl" : "animate-marquee"}`}>
           {items.map((it, i) => (
-            <span key={i} className="flex items-center gap-14 text-white/70">
+            <span key={`${it}-${i}`} className="flex items-center gap-14 text-white/70">
               <span className="font-display font-bold tracking-widest uppercase text-lg md:text-xl">
                 {it}
               </span>

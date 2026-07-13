@@ -4,7 +4,7 @@ import { useLang } from "../../contexts/LangContext";
 import { ASSETS } from "../../i18n/translations";
 
 export default function Header() {
-  const { t, lang, toggle } = useLang();
+  const { t, toggle } = useLang();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
 

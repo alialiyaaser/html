@@ -28,7 +28,7 @@ export default function WhyUs() {
             ][i];
             return (
               <div
-                key={i}
+                key={it.t}
                 data-testid={`why-card-${i}`}
                 className={`${spanClass} group relative bg-[#0f0f0f] border border-white/10 p-9 lg:p-11 min-h-[220px] hover:border-white/25 transition-colors duration-500`}
               >

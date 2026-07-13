@@ -20,7 +20,7 @@ export default function FAQ() {
               {t.faq.items.map((it, i) => {
                 const isOpen = open === i;
                 return (
-                  <div key={i} className="border-b border-white/10" data-testid={`faq-item-${i}`}>
+                  <div key={it.q} className="border-b border-white/10" data-testid={`faq-item-${i}`}>
                     <button
                       className="w-full flex items-center justify-between py-6 gap-6 text-start hover:text-white"
                       onClick={() => setOpen(isOpen ? -1 : i)}
