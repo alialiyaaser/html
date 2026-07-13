@@ -1,10 +1,8 @@
 import React from "react";
 import { Truck, Sparkles, Lock, MessageCircle } from "lucide-react";
 import { useLang } from "../../contexts/LangContext";
-import { ASSETS } from "../../i18n/translations";
 
 const icons = [Truck, Sparkles, Lock, MessageCircle];
-const bgs = [ASSETS.setup1, ASSETS.setup2, ASSETS.hero, ASSETS.about];
 
 export default function WhyUs() {
   const { t } = useLang();
@@ -17,7 +15,8 @@ export default function WhyUs() {
             {t.why.title}
           </h2>
         </div>
-        {/* Immersive bento */}
+
+        {/* Clean bento — no background images */}
         <div className="grid md:grid-cols-2 lg:grid-cols-12 gap-5 lg:gap-6">
           {t.why.items.map((it, i) => {
             const Icon = icons[i];
@@ -27,39 +26,30 @@ export default function WhyUs() {
               "lg:col-span-5",
               "lg:col-span-7",
             ][i];
-            const minH = [
-              "min-h-[280px] lg:min-h-[340px]",
-              "min-h-[280px] lg:min-h-[340px]",
-              "min-h-[280px] lg:min-h-[340px]",
-              "min-h-[280px] lg:min-h-[340px]",
-            ][i];
             return (
               <article
                 key={it.t}
                 data-testid={`why-card-${i}`}
-                className={`${spanClass} ${minH} group relative overflow-hidden`}
+                className={`${spanClass} group relative overflow-hidden bg-[#0f0f0f] border border-white/10 hover:border-white/25 min-h-[240px] lg:min-h-[280px] transition-colors duration-500`}
               >
-                <img
-                  src={bgs[i]}
-                  alt=""
+                {/* Subtle radial light from icon corner */}
+                <div
                   aria-hidden
-                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1200ms] group-hover:scale-[1.05]"
+                  className="absolute -top-24 -end-24 w-64 h-64 rounded-full opacity-40 group-hover:opacity-60 transition-opacity duration-700"
+                  style={{
+                    background: "radial-gradient(circle at center, rgba(255,255,255,0.08), transparent 70%)",
+                  }}
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-black/30" />
-                <div className="absolute inset-0 opacity-30 mix-blend-overlay" style={{
-                  backgroundImage: "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>\")",
-                }} />
-
                 <div className="relative h-full p-8 lg:p-10 flex flex-col justify-between">
                   <div className="flex items-start justify-between gap-6">
                     <p className="kicker font-mono">{String(i + 1).padStart(2, "0")}</p>
-                    <div className="w-12 h-12 rounded-2xl bg-white/10 backdrop-blur-md border border-white/15 flex items-center justify-center">
-                      <Icon className="w-5 h-5 text-white" />
+                    <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center group-hover:bg-white group-hover:text-black transition-colors duration-500">
+                      <Icon className="w-5 h-5" />
                     </div>
                   </div>
                   <div>
                     <h3 className="font-display text-2xl md:text-3xl font-bold text-white mb-3">{it.t}</h3>
-                    <p className="text-neutral-200/90 leading-[1.85] max-w-md text-sm md:text-base">{it.d}</p>
+                    <p className="text-neutral-400 leading-[1.9] max-w-md text-sm md:text-base">{it.d}</p>
                   </div>
                 </div>
               </article>
