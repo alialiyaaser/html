@@ -4,9 +4,9 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        display: ['"Cabinet Grotesk"', '"Clash Display"', "Montserrat", "sans-serif"],
-        sans: ['"IBM Plex Sans"', "Manrope", "system-ui", "sans-serif"],
-        arabic: ['"Almarai"', '"IBM Plex Sans Arabic"', "Tajawal", "sans-serif"],
+        display: ['"Manrope"', '"Inter"', "system-ui", "sans-serif"],
+        sans: ['"IBM Plex Sans"', '"Manrope"', "system-ui", "sans-serif"],
+        arabic: ['"IBM Plex Sans Arabic"', '"Tajawal"', "system-ui", "sans-serif"],
         mono: ['"JetBrains Mono"', "ui-monospace", "monospace"],
       },
       colors: {

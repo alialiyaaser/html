@@ -23,7 +23,7 @@ html, body {
 }
 
 html[dir="rtl"] body {
-  font-family: "Almarai", "IBM Plex Sans Arabic", "Tajawal", sans-serif;
+  font-family: "IBM Plex Sans Arabic", "Tajawal", system-ui, sans-serif;
 }
 
 body {
@@ -53,9 +53,9 @@ body {
 ::-webkit-scrollbar-thumb { background: #1e1e1e; border-radius: 999px; }
 ::-webkit-scrollbar-thumb:hover { background: #2a2a2a; }
 
-/* Utility: display font */
-.font-display { font-family: "Cabinet Grotesk", "Clash Display", "Montserrat", sans-serif; letter-spacing: -0.03em; }
-html[dir="rtl"] .font-display { font-family: "Almarai", "Cabinet Grotesk", sans-serif; letter-spacing: -0.01em; }
+/* Utility: display font — clean, readable, app-like */
+.font-display { font-family: "Manrope", "Inter", system-ui, sans-serif; letter-spacing: -0.015em; }
+html[dir="rtl"] .font-display { font-family: "IBM Plex Sans Arabic", "Tajawal", system-ui, sans-serif; letter-spacing: 0; }
 
 /* Utility: kicker label */
 .kicker {
