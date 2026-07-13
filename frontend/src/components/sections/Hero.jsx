@@ -74,11 +74,13 @@ export default function Hero() {
             <div className="relative">
               <div className="absolute -inset-6 rounded-[36px] border border-white/10 pointer-events-none" />
               <div className="absolute inset-0 rounded-[28px] bg-gradient-to-br from-white/5 to-transparent pointer-events-none" />
-              <img
-                src={ASSETS.hero}
-                alt="UR SETUP mousepad"
-                className="relative rounded-[24px] w-full object-cover aspect-[4/5] animate-float shadow-[0_40px_80px_-20px_rgba(0,0,0,0.6)]"
-              />
+              <div className="relative rounded-[24px] bg-[#0f0f0f] border border-white/5 w-full aspect-square flex items-center justify-center overflow-hidden">
+                <img
+                  src={ASSETS.hero}
+                  alt="UR SETUP mousepad"
+                  className="w-[92%] h-[92%] object-contain animate-float"
+                />
+              </div>
               <div className="absolute -bottom-4 -end-4 bg-black border border-white/10 px-4 py-3 rounded-2xl">
                 <p className="kicker mb-1">{lang === "ar" ? "الطراز" : "MODEL"}</p>
                 <p className="font-display font-bold text-white text-sm">GREY MARBLE · 01</p>

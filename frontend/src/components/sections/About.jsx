@@ -11,11 +11,13 @@ export default function About() {
         <div className="grid lg:grid-cols-12 gap-12 items-center">
           <div className="lg:col-span-5 relative">
             <div className="relative">
-              <img
-                src={ASSETS.about}
-                alt="UR SETUP studio"
-                className="w-full aspect-[4/5] object-cover"
-              />
+              <div className="w-full aspect-[4/5] bg-[#0f0f0f] border border-white/10 flex items-center justify-center overflow-hidden">
+                <img
+                  src={ASSETS.about}
+                  alt="UR SETUP studio"
+                  className="w-full h-full object-contain"
+                />
+              </div>
               <div className="absolute -bottom-6 start-6 bg-black border border-white/10 px-5 py-4">
                 <p className="kicker">EST. 2023</p>
                 <p className="font-display text-xl font-bold text-white mt-1">RIYADH · KSA</p>

@@ -45,8 +45,14 @@ export default function ComingSoon() {
       <div className="max-w-[1280px] mx-auto px-6 lg:px-10">
         <div className="grid lg:grid-cols-12 gap-10 items-center">
           <div className="lg:col-span-6 relative">
-            <div className="relative overflow-hidden border border-white/10">
-              <img src={item.image} alt={lang === "ar" ? item.name_ar : item.name_en} className="w-full aspect-[4/5] object-cover" />
+            <div className="relative overflow-hidden border border-white/10 bg-[#0f0f0f]">
+              <div className="w-full aspect-[4/5] flex items-center justify-center">
+                <img
+                  src={item.image}
+                  alt={lang === "ar" ? item.name_ar : item.name_en}
+                  className="w-full h-full object-cover"
+                />
+              </div>
               <div className="absolute top-4 start-4 bg-white text-black text-[10px] tracking-[0.22em] uppercase px-3 py-1.5 font-semibold">
                 {lang === "ar" ? "قريبًا" : "COMING SOON"}
               </div>
