@@ -12,8 +12,13 @@ export default function PromoBanner() {
     try {
       const d = sessionStorage.getItem("ur_promo_dismissed");
       if (d === "1") setDismissed(true);
-    } catch {}
-    api.get("/promo-banner").then((r) => setData(r.data)).catch(() => {});
+    } catch (err) {
+      console.warn("[PromoBanner] sessionStorage unavailable:", err);
+    }
+    api
+      .get("/promo-banner")
+      .then((r) => setData(r.data))
+      .catch((err) => console.warn("[PromoBanner] failed to load banner:", err));
   }, []);
 
   if (!data || !data.active || dismissed) return null;
@@ -34,7 +39,11 @@ export default function PromoBanner() {
           <p className="flex-1 text-center text-[13px] tracking-[0.14em] uppercase font-medium truncate">{text}</p>
         )}
         <button
-          onClick={() => { setDismissed(true); try { sessionStorage.setItem("ur_promo_dismissed", "1"); } catch {} }}
+          onClick={() => {
+            setDismissed(true);
+            try { sessionStorage.setItem("ur_promo_dismissed", "1"); }
+            catch (err) { console.warn("[PromoBanner] cannot persist dismissal:", err); }
+          }}
           aria-label="close"
           data-testid="promo-close"
           className="shrink-0 opacity-60 hover:opacity-100 transition-opacity duration-300"

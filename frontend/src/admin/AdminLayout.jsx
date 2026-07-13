@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { NavLink, Navigate, Outlet, useNavigate } from "react-router-dom";
 import { LogOut, LayoutDashboard, MessageSquare, Rocket, Megaphone, Mail, Users, Shield } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
@@ -15,6 +15,7 @@ const NAV = [
 export default function AdminLayout() {
   const { user, loading, logout } = useAuth();
   const navigate = useNavigate();
+  const outletContext = useMemo(() => ({ user }), [user]);
 
   if (loading) return <div className="min-h-screen bg-black text-white flex items-center justify-center">…</div>;
   if (!user) return <Navigate to="/admin/login" replace />;
@@ -97,7 +98,7 @@ export default function AdminLayout() {
           ))}
         </div>
         <div className="p-6 lg:p-10">
-          <Outlet context={{ user }} />
+          <Outlet context={outletContext} />
         </div>
       </main>
     </div>

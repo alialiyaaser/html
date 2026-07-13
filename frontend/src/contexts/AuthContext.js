@@ -8,7 +8,8 @@ export function AuthProvider({ children }) {
   const [token, setToken] = useState(() => {
     try {
       return localStorage.getItem(TOKEN_KEY);
-    } catch {
+    } catch (err) {
+      console.warn("[AuthContext] cannot read token from localStorage:", err);
       return null;
     }
   });
@@ -18,10 +19,12 @@ export function AuthProvider({ children }) {
   const applyToken = useCallback((tk) => {
     if (tk) {
       api.defaults.headers.common.Authorization = `Bearer ${tk}`;
-      try { localStorage.setItem(TOKEN_KEY, tk); } catch {}
+      try { localStorage.setItem(TOKEN_KEY, tk); }
+      catch (err) { console.warn("[AuthContext] cannot persist token:", err); }
     } else {
       delete api.defaults.headers.common.Authorization;
-      try { localStorage.removeItem(TOKEN_KEY); } catch {}
+      try { localStorage.removeItem(TOKEN_KEY); }
+      catch (err) { console.warn("[AuthContext] cannot clear token:", err); }
     }
   }, []);
 

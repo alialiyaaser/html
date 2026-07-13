@@ -579,35 +579,40 @@ SEED_REVIEWS = [
 
 @app.on_event("startup")
 async def seed():
-    # Indexes
+    await _ensure_indexes()
+    await _seed_reviews()
+    await _seed_meta_counters()
+    await _seed_super_admin()
+    await _seed_coming_soon()
+    await _seed_promo_banner()
+
+
+async def _ensure_indexes() -> None:
     await db.users.create_index("email", unique=True)
     await db.reviews.create_index("created_at")
     await db.newsletter.create_index("email", unique=True)
 
-    # Reviews seed (only if empty)
-    if await db.reviews.count_documents({}) == 0:
-        docs = []
-        for r in SEED_REVIEWS:
-            docs.append({
-                **r,
-                "id": str(uuid.uuid4()),
-                "verified": True,
-                "hidden": False,
-                "created_at": _now_iso(),
-            })
-        await db.reviews.insert_many(docs)
 
-    # Ensure hidden field on all existing reviews (safe migration)
+async def _seed_reviews() -> None:
+    if await db.reviews.count_documents({}) == 0:
+        docs = [
+            {**r, "id": str(uuid.uuid4()), "verified": True, "hidden": False, "created_at": _now_iso()}
+            for r in SEED_REVIEWS
+        ]
+        await db.reviews.insert_many(docs)
+    # Safe migration: ensure hidden field on all existing reviews
     await db.reviews.update_many({"hidden": {"$exists": False}}, {"$set": {"hidden": False}})
 
-    # Meta counters
+
+async def _seed_meta_counters() -> None:
     await db.meta.update_one(
         {"key": "counters"},
         {"$setOnInsert": {"key": "counters", "customers": 250, "orders": 500}},
         upsert=True,
     )
 
-    # Super admin seed
+
+async def _seed_super_admin() -> None:
     admin_email = os.environ.get("ADMIN_EMAIL", "admin@ursetup.sa").lower().strip()
     admin_password = os.environ.get("ADMIN_PASSWORD", "URSetup@2026!")
     existing = await db.users.find_one({"email": admin_email})
@@ -620,38 +625,41 @@ async def seed():
             "password_hash": hash_password(admin_password),
             "created_at": _now_iso(),
         })
-    else:
-        # keep password in sync with env if changed
-        if not verify_password(admin_password, existing.get("password_hash", "")):
-            await db.users.update_one(
-                {"email": admin_email},
-                {"$set": {"password_hash": hash_password(admin_password), "role": "super_admin"}},
-            )
+        return
+    if not verify_password(admin_password, existing.get("password_hash", "")):
+        await db.users.update_one(
+            {"email": admin_email},
+            {"$set": {"password_hash": hash_password(admin_password), "role": "super_admin"}},
+        )
 
-    # Sample coming-soon (only if empty)
-    if await db.coming_soon.count_documents({}) == 0:
-        launch = (datetime.now(timezone.utc) + timedelta(days=21)).isoformat()
-        await db.coming_soon.insert_one({
-            "id": str(uuid.uuid4()),
-            "name_en": "The Obsidian XL",
-            "name_ar": "أوبسيديان XL",
-            "desc_en": "An oversized dark-marble mousepad for full-desk immersion. Precision-stitched, low-friction.",
-            "desc_ar": "ماوس باد رخامي داكن بحجم كبير لتغطية مكتبك بالكامل. حواف مخيطة بدقة، احتكاك منخفض.",
-            "image": "https://images.unsplash.com/photo-1650804068570-7fb2e3dbf888?crop=entropy&cs=srgb&fm=jpg&w=1600&q=85",
-            "launch_at": launch,
-            "active": True,
-            "created_at": _now_iso(),
-        })
 
-    # Default promo banner
-    if not await db.settings.find_one({"key": "promo_banner"}):
-        await db.settings.insert_one({
-            "key": "promo_banner",
-            "text_en": "Free delivery across KSA — Marble XL series coming soon",
-            "text_ar": "شحن مجاني داخل المملكة — سلسلة الرخام XL قريبًا",
-            "link": "#coming-soon",
-            "active": True,
-        })
+async def _seed_coming_soon() -> None:
+    if await db.coming_soon.count_documents({}) > 0:
+        return
+    launch = (datetime.now(timezone.utc) + timedelta(days=21)).isoformat()
+    await db.coming_soon.insert_one({
+        "id": str(uuid.uuid4()),
+        "name_en": "The Obsidian XL",
+        "name_ar": "أوبسيديان XL",
+        "desc_en": "An oversized dark-marble mousepad for full-desk immersion. Precision-stitched, low-friction.",
+        "desc_ar": "ماوس باد رخامي داكن بحجم كبير لتغطية مكتبك بالكامل. حواف مخيطة بدقة، احتكاك منخفض.",
+        "image": "https://images.unsplash.com/photo-1650804068570-7fb2e3dbf888?crop=entropy&cs=srgb&fm=jpg&w=1600&q=85",
+        "launch_at": launch,
+        "active": True,
+        "created_at": _now_iso(),
+    })
+
+
+async def _seed_promo_banner() -> None:
+    if await db.settings.find_one({"key": "promo_banner"}):
+        return
+    await db.settings.insert_one({
+        "key": "promo_banner",
+        "text_en": "Free delivery across KSA — Marble XL series coming soon",
+        "text_ar": "شحن مجاني داخل المملكة — سلسلة الرخام XL قريبًا",
+        "link": "#coming-soon",
+        "active": True,
+    })
 
 
 app.include_router(api)
